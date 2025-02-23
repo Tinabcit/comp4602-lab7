@@ -1,0 +1,48 @@
+﻿@page "/students"
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using BlazorStudents.Models
+@inject HttpClient Http
+
+<PageTitle>Students</PageTitle>
+<h1>Students</h1>
+
+@if (StudentList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!StudentList.Any())
+{
+    <p>No students found.</p>
+}
+else
+{
+    <QuickGrid Items="@StudentList.AsQueryable()">
+    <PropertyColumn Property="@(_ => _.Id)" Title="ID" Sortable="true" />
+    <PropertyColumn Property="@(_ => _.FirstName)" Title="First Name" Sortable="true" />
+    <PropertyColumn Property="@(_ => _.LastName)" Title="Last Name" Sortable="true" />
+    <PropertyColumn Property="@(_ => _.School)" Title="School" Sortable="true" />
+  </QuickGrid>
+
+}
+
+@code {
+    private List<BlazorStudents.Models.Student> StudentList { get; set; } = new(); // Renamed from 'Students' to StudentList'
+
+protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("Fetching students from API...");
+            var response = await
+            Http.GetFromJsonAsync<List<BlazorStudents.Models.Student>>("https://studentfunctionmze.azurewebsites.net/api/students");
+
+            StudentList = response ?? new List<BlazorStudents.Models.Student>(); // Prevents null issues
+            Console.WriteLine($"Loaded {StudentList.Count} students.");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading students: {ex.Message}");
+        }
+    }
+}
