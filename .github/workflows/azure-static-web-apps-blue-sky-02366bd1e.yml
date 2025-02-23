@@ -24,5 +24,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "BlazorStudents"  # Change if your Blazor project is inside a subfolder
-          api_location: "/StudentFunctions"  # Change if using Azure Functions
+          api_location: "StudentFunctions"  # Change if using Azure Functions
           output_location: "wwwroot"
